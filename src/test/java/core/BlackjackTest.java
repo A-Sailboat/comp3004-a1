@@ -9,59 +9,46 @@ import java.io.PrintWriter;
 import junit.framework.TestCase;
 
 public class BlackjackTest extends TestCase{
-
+	public void testDeckCount() {
+		Deck aDeck  = new Deck();
+		assertEquals(52, aDeck.size());
+	}
 	public void testFileLoad() {
-		BlackjackInputSelect start  = new BlackjackInputSelect();
-		
-	
-	public void testDeck() {
-		Deck aDeck = new Deck();
-		
-		assertEquals(52, aDeck.size());
-		
-	}
-	public void testShuffle() {
-		Deck aDeck = new Deck();
-		Deck aCopyDeck = aDeck;
-		
-		aDeck.shuffle();
-		assertEquals(52, aDeck.size());
-		
+		Casino aCasino  = new Casino();
+		assertEquals(0, aCasino.runGame("f"));
 	}
 	
-	public void testConsole() {
-		BlackjackInputSelect start = new BlackjackInputSelect();
-		assertEquals(1, BlackjackInputSelect("c"));
-		
+	public void testConsoleLoad() {
+		Casino aCasino  = new Casino();
+		assertEquals(0, aCasino.runGame("c"));
 	}
+	
 	public void testPlayerCardVisiblity() {
 		Deck aDeck = new Deck();
 		Player aPlayer = new Player();
+		aPlayer.addHand(new Hand());
 		
-		aPlayer.deal(aDeck.draw);
-		
-		assertEqual(False, player.hand.numHiddenCard());
+		aPlayer.draw(aDeck,2);
+		assertEquals(0, aPlayer.numHiddenCards());
 
 	}
 	
 	public void testDealerCardSemiVisiblity() {
 		Deck aDeck = new Deck();
-		Player aPlayer = new Player("Dealer");
-		
-		aPlayer.deal(aDeck.draw);
-		
-		
-		assertEqual(1, hand.numHiddenCard());
+		Dealer aDealer = new Dealer();
+		aDealer.addHand(new Hand());
+		aDealer.draw(aDeck,2);
+		assertEquals(1, aDealer.numHiddenCards());
 
 	}
 	
 	public void testPlayerHit() {
 		Deck aDeck = new Deck();
 		Player aPlayer = new Player();
-		handSize = aPlayer.hands[0].size();
+		aPlayer.addHand(new Hand());
 		
-		assertThat(player.hit(aDeck), is(instanceof(Card)));
-		assertEqual((hand.hit(deck)).size(),(hand.size()+1));
+		assertThat(aPlayer.draw(aDeck), isA(Card));
+		assertEqual((aPlayer.draw(aDeck)).size(),(hand.size()+1));
 	}
 	
 	public void testPlayerMultiHit() {
@@ -102,28 +89,34 @@ public class BlackjackTest extends TestCase{
 	}
 	public void testTwoAceHand() {
 		Hand aHand = new Hand();
-		aHand.hit(new Card("Ace","Spades"));
-		aHand.hit(new Card("Ace","Clubs"));
-		assertEqual(12, aHand.value());
+		aHand.add(new Card("SA"));
+		aHand.add(new Card("CA"));
+		assertEquals(12, aHand.value());
 	}
 	public void testAceElevenToOne() {
 		
 	}
 	public void testMultiAceAsOne() {
 		Hand aHand = new Hand();
-		aHand.hit(new Card("Ace","Spades"));
-		aHand.hit(new Card("Ace","Clubs"));
-		aHand.hit(new Card(10,"Diamonds"));
-		assertEqual(12,aHand.value());
+		Card redAce = new Card("DA");
+		Card blackAce = new Card("SA");
+		aHand.add(new Card("SA"));
+		aHand.add(new Card("CA"));
+		aHand.add(new Card("DT"));
+		assertEquals(12,aHand.value());
 	}
 	public void testCourtIsTen() {
-		Card jack = new Card("Jack","Hearts");
-		Card queen = new Card("Queen","Spades");
-		Card king = new Card("King","Clubs");
+		Hand jackHand = new Hand();
+		jackHand.add(new Card("HJ"));
+		assertEquals(10,jackHand.value());
 		
-		assertEqual(10,jack.getValue());
-		assertEqual(10,queen.getValue());
-		assertEqual(10,king.getValue());
+		Hand queenHand = new Hand();
+		queenHand.add(new Card("HQ"));
+		assertEquals(10,queenHand.value());
+		
+		Hand kingHand = new Hand();
+		kingHand.add(new Card("HK"));
+		assertEquals(10,kingHand.value());
 	}
 	public void testPlayerBlackjackDetect() {
 		

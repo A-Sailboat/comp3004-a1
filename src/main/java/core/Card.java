@@ -10,7 +10,9 @@ public class Card  {
 		this.rank = rank;
 		this.suit = suit;
 	}
+	public Card(String twoCharCardIdentifier) {
 	
+	}
 	public int getRank() {return rank;}
 	public int getSuit() {return suit;}
 	public boolean isVisible() {return visible;}

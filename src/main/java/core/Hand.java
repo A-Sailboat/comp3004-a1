@@ -15,6 +15,15 @@ public class Hand  {
 		
 		
 	}
+	public Hand add(Card aCard) {
+		hand.add(aCard);
+		return this;
+	}
+	public int value() {
+		// TODO Auto-generated method stub
+		return value;
+	}
+
 	
 	
 }
