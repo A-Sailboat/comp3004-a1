@@ -23,6 +23,9 @@ public class Hand  {
 		// TODO Auto-generated method stub
 		return value;
 	}
+	public int size() {
+		return hand.size();
+	}
 
 	
 	

@@ -2,19 +2,25 @@ package core;
 
 public class Card  {
 	
-	private int rank;
-	private int suit;
+	private char rank;
+	private char suit;
 	private boolean visible;
 	
-	public Card(int rank, int suit) {
-		this.rank = rank;
+	public Card(char suit, char rank) {
 		this.suit = suit;
+		this.rank = rank;
 	}
-	public Card(String twoCharCardIdentifier) {
+	public Card(String twoCardIdentifier) {
 	
 	}
+	
+	
 	public int getRank() {return rank;}
 	public int getSuit() {return suit;}
+	public Card setVisible(boolean visible) {
+		this.visible = visible;
+		return this;
+	}
 	public boolean isVisible() {return visible;}
 	
 }

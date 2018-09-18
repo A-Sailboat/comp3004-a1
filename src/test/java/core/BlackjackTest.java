@@ -9,6 +9,16 @@ import java.io.PrintWriter;
 import junit.framework.TestCase;
 
 public class BlackjackTest extends TestCase{
+	
+	public void testInitCardWithString() {
+		Card diamondsJack  = new Card("DJ");
+		Card heartsNine  = new Card("H9");
+		assertEquals('D', diamondsJack.getSuit());
+		assertEquals('J', diamondsJack.getRank());
+		
+		assertEquals('H', heartsNine.getSuit());
+		assertEquals('9', heartsNine.getRank());
+	}
 	public void testDeckCount() {
 		Deck aDeck  = new Deck();
 		assertEquals(52, aDeck.size());
@@ -45,10 +55,11 @@ public class BlackjackTest extends TestCase{
 	public void testPlayerHit() {
 		Deck aDeck = new Deck();
 		Player aPlayer = new Player();
-		aPlayer.addHand(new Hand());
+		Hand aHand = new Hand();
+		aPlayer.addHand(aHand);
 		
-		assertThat(aPlayer.draw(aDeck), isA(Card));
-		assertEqual((aPlayer.draw(aDeck)).size(),(hand.size()+1));
+		assertTrue(aPlayer.draw(aDeck) instanceof Card);
+		//assertEquals((aHand.size())+1,(aHand.size());
 	}
 	
 	public void testPlayerMultiHit() {
