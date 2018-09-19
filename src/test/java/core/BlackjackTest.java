@@ -23,15 +23,22 @@ public class BlackjackTest extends TestCase{
 		Deck aDeck  = new Deck();
 		assertEquals(52, aDeck.size());
 	}
-	public void testFileLoad() {
+	public void testFileGameRun() {
 		Casino aCasino  = new Casino();
 		assertEquals(0, aCasino.runGame("f"));
 	}
 	
-	public void testConsoleLoad() {
+	public void testGameRunLoad() {
 		Casino aCasino  = new Casino();
 		assertEquals(0, aCasino.runGame("c"));
 	}
+	
+	public void testFileLoad() {
+		Casino aCasino  = new Casino();
+		assertNotNull(aCasino.getFile("example.txt"));
+	}
+	
+	
 	
 	public void testPlayerCardVisiblity() {
 		Deck aDeck = new Deck();
@@ -53,50 +60,112 @@ public class BlackjackTest extends TestCase{
 	}
 	
 	public void testPlayerHit() {
-		Deck aDeck = new Deck();
-		Player aPlayer = new Player();
-		Hand aHand = new Hand();
-		aPlayer.addHand(aHand);
-		
-		assertTrue(aPlayer.draw(aDeck) instanceof Card);
-		//assertEquals((aHand.size())+1,(aHand.size());
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "hitTest.txt"));
+		//game ran successfully
+		assertEquals(3,aCasino.getPlayer().getHand(0).size());
+		//Player hit at least once as they have 3 cards
+
 	}
 	
 	public void testPlayerMultiHit() {
-		
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "multiHitTest.txt"));
+		//game ran successfully
+		assertEquals(11,aCasino.getPlayer().getHand(0).size());
+		//Player hit at nine times which is the max possible 
+		//in blackjack
 	}
 
 	public void testPlayerStand() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "standTest.txt"));
+		//game ran successfully
+		assertEquals(11,aCasino.getPlayer().getHand(0).value());
+		//Both hands worth <20 and the game ended therefore
+		//the player  must have stood.
 		
 	}
 	public void testPlayerHandReveal() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "handReveal.txt"));
+		//game ran successfully
+		assertEquals(0,aCasino.getPlayer().numHiddenCards());
+		//Player has/had no hidden cards
 		
 	}
 	
 	public void testPlayerBust() {
-		
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "bustTest.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getDealer());
+		//Dealer won and therefore the player lost
 	}
 	
 	public void testDealerHitMin() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "dealerHitMinTest.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getDealer());
+		//Dealer won and therefore the player lost
 		
 	}
 	public void testDealerSoftHitMin() {
 		
+		Deck aDeck = new Deck();
+		Dealer aDealer = new Dealer();
+		aDealer.draw(aDeck,new Card("SK"));
+		aDealer.draw(aDeck,new Card("H6"));
+		assertEquals('H', aDealer.decideTurn());
+		//Hits on 16
+		
+		Deck bDeck = new Deck();
+		Dealer bDealer = new Dealer();
+		bDealer.draw(bDeck,new Card("SK"));
+		bDealer.draw(bDeck,new Card("H7"));
+		assertEquals('S', aDealer.decideTurn());
+		//Stands on hard 17
+		
+		
+		
 	}
 	public void testDealerMultiHit() {
+		Deck aDeck = new Deck();
+		Dealer aDealer = new Dealer();
+		aDealer.draw(aDeck,new Card("SK"));
+		aDealer.draw(aDeck,new Card("H6"));
+		assertEquals('H', aDealer.decideTurn());
 		
 	}
 	public void testDealerHandReveal() {
 		
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f","handReveal.txt"));
+		assertEquals(0,aCasino.getDealer().numHiddenCards());
+		//None of the  dealers cards are still concealed
+		
 	}		
 	public void testDealerBust() {
-		
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "dealerBust.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getPlayer());
+		//Dealer lost and therefore the player won
 	}
 	public void testAceAsOne() {
-		
+		Hand aHand = new Hand();
+		aHand.add(new Card("S9"));
+		aHand.add(new Card("C9"));
+		assertEquals(18, aHand.value());
+		aHand.add(new Card("SA"));
+		assertEquals(19, aHand.value());
 	}
 	public void testAceAsEleven() {
-		
+		Hand aHand = new Hand();
+		aHand.add(new Card("CK"));
+		aHand.add(new Card("SA"));
+		assertEquals(21, aHand.value());
 	}
 	public void testTwoAceHand() {
 		Hand aHand = new Hand();
@@ -105,16 +174,24 @@ public class BlackjackTest extends TestCase{
 		assertEquals(12, aHand.value());
 	}
 	public void testAceElevenToOne() {
+		Hand aHand = new Hand();
+		aHand.add(new Card("S9"));
+		aHand.add(new Card("CA"));
+		assertEquals(20, aHand.value());
+		aHand.add(new Card("H5"));
+		assertEquals(15, aHand.value());
 		
 	}
 	public void testMultiAceAsOne() {
 		Hand aHand = new Hand();
-		Card redAce = new Card("DA");
-		Card blackAce = new Card("SA");
+		
 		aHand.add(new Card("SA"));
 		aHand.add(new Card("CA"));
 		aHand.add(new Card("DT"));
-		assertEquals(12,aHand.value());
+		aHand.add(new Card("DA"));
+		aHand.add(new Card("HA"));
+		assertEquals(14,aHand.value());
+		//drew all 4 aces ie max possible
 	}
 	public void testCourtIsTen() {
 		Hand jackHand = new Hand();
@@ -130,30 +207,104 @@ public class BlackjackTest extends TestCase{
 		assertEquals(10,kingHand.value());
 	}
 	public void testPlayerBlackjackDetect() {
-		
+		Casino aCasino = new Casino();
+		aCasino.getPlayer().getHand(0).add(new Card("SK"));
+		aCasino.getPlayer().getHand(0).add(new Card("SA"));
+		assertTrue(aCasino.getPlayer().hasBlackJack());
 	}
+	
 	public void testDealerBlackjackDetect() {
-		
+		Casino aCasino = new Casino();
+		aCasino.getDealer().getHand(0).add(new Card("SK"));
+		aCasino.getDealer().getHand(0).add(new Card("SA"));
+		assertTrue(aCasino.getDealer().hasBlackJack());
 	}
 	public void testPlayerBlackjackWin() {
-		
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "playerBlackjackWinTest.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getPlayer());
+		//Player  was the winner
+		assertTrue(aCasino.getPlayer().hasBlackJack());
+		//player had blackjack
 	}
 	public void testDoubleBlackjackDealerTrumps() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "doubleBlackjackDealerTrumps.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getDealer());
+		//Dealer won and therefore the player lost
+		assertTrue(aCasino.getPlayer().hasBlackJack());
+		assertTrue(aCasino.getDealer().hasBlackJack());
+		//Both had blackjack
 		
 	}
 	public void testDealerBlackjackWin() {
-		
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "dealerBlackjackWinTest.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getPlayer());
+		//Player  was the winner
 	}
 	public void testPlayerScoring() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "aPlayerScoringTest.txt"));
+		//game ran successfully
+		assertEquals(12,aCasino.getPlayer().getHand(0).value());
+		//Player  was the winner
+		
+		Casino bCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "bPlayerScoringTest.txt"));
+		//game ran successfully
+		assertEquals(23,bCasino.getPlayer().getHand(0).value());
+		//Player  was the winner
+		
+		Casino cCasino = new Casino();
+		assertEquals(0,cCasino.runGame("f", "cPlayerScoringTest.txt"));
+		//game ran successfully
+		assertEquals(25,cCasino.getPlayer().getHand(0).value());
+		//Player  was the winner
+		
 		
 	}
 	public void testDealerScoring() {
+			Casino aCasino = new Casino();
+			assertEquals(0,aCasino.runGame("f", "aDealerScoringTest.txt"));
+			//game ran successfully
+			assertEquals(12,aCasino.getDealer().getHand(0).value());
+			//Dealer  was the winner
+			
+			Casino bCasino = new Casino();
+			assertEquals(0,aCasino.runGame("f", "bDealerScoringTest.txt"));
+			//game ran successfully
+			assertEquals(23,bCasino.getDealer().getHand(0).value());
+			//Dealer  was the loser
+			
+			Casino cCasino = new Casino();
+			assertEquals(0,cCasino.runGame("f", "cDealerScoringTest.txt"));
+			//game ran successfully
+			assertEquals(17,cCasino.getDealer().getHand(0).value());
+			//Dealer  was the winner
 		
 	}
 	public void testPlayerBetterHand() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "playerBetterHandTest.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getPlayer());
+		//Player  was the winner
+		assertTrue(aCasino.getDealer().getHand(0).value() < aCasino.getPlayer().getHand(0).value());
+		
 		
 	}
-	public void testDealerBetterHand() {
+	
+	public void testDealerBetterOrEqualHand() {
+		Casino aCasino = new Casino();
+		assertEquals(0,aCasino.runGame("f", "dealerBetterOrEqualHandTest.txt"));
+		//game ran successfully
+		assertTrue(aCasino.getWinner() == aCasino.getDealer());
+		assertTrue(aCasino.getDealer().getHand(0).value() >= aCasino.getPlayer().getHand(0).value());
+		//Player  was the winner
 		
 	}
 	public void testPlayerSpliting() {
