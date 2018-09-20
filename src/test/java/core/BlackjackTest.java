@@ -45,7 +45,8 @@ public class BlackjackTest extends TestCase{
 		Player aPlayer = new Player();
 		aPlayer.addHand(new Hand());
 		
-		aPlayer.draw(aDeck,2);
+		aPlayer.draw(aDeck);
+		aPlayer.draw(aDeck);
 		assertEquals(0, aPlayer.numHiddenCards());
 
 	}
@@ -54,7 +55,9 @@ public class BlackjackTest extends TestCase{
 		Deck aDeck = new Deck();
 		Dealer aDealer = new Dealer();
 		aDealer.addHand(new Hand());
-		aDealer.draw(aDeck,2);
+		aDealer.draw(aDeck);
+		aDealer.draw(aDeck);
+		
 		assertEquals(1, aDealer.numHiddenCards());
 
 	}
@@ -63,7 +66,7 @@ public class BlackjackTest extends TestCase{
 		Casino aCasino = new Casino();
 		assertEquals(0,aCasino.runGame("f", "hitTest.txt"));
 		//game ran successfully
-		assertEquals(3,aCasino.getPlayer().getHand(0).size());
+		assertEquals(3,aCasino.getPlayer().getActiveHand().size());
 		//Player hit at least once as they have 3 cards
 
 	}
@@ -72,7 +75,7 @@ public class BlackjackTest extends TestCase{
 		Casino aCasino = new Casino();
 		assertEquals(0,aCasino.runGame("f", "multiHitTest.txt"));
 		//game ran successfully
-		assertEquals(11,aCasino.getPlayer().getHand(0).size());
+		assertEquals(11,aCasino.getPlayer().getActiveHand().size());
 		//Player hit at nine times which is the max possible 
 		//in blackjack
 	}
@@ -81,7 +84,7 @@ public class BlackjackTest extends TestCase{
 		Casino aCasino = new Casino();
 		assertEquals(0,aCasino.runGame("f", "standTest.txt"));
 		//game ran successfully
-		assertEquals(11,aCasino.getPlayer().getHand(0).value());
+		assertEquals(11,aCasino.getPlayer().getActiveHand().value());
 		//Both hands worth <20 and the game ended therefore
 		//the player  must have stood.
 		
@@ -117,14 +120,14 @@ public class BlackjackTest extends TestCase{
 		Dealer aDealer = new Dealer();
 		aDealer.draw(aDeck,new Card("SK"));
 		aDealer.draw(aDeck,new Card("H6"));
-		assertEquals('H', aDealer.decideTurn());
+		assertEquals('H', aDealer.decideTurn(aDealer.getActiveHand()));
 		//Hits on 16
 		
 		Deck bDeck = new Deck();
 		Dealer bDealer = new Dealer();
 		bDealer.draw(bDeck,new Card("SK"));
 		bDealer.draw(bDeck,new Card("H7"));
-		assertEquals('S', aDealer.decideTurn());
+		assertEquals('S', aDealer.decideTurn(aDealer.getActiveHand()));
 		//Stands on hard 17
 		
 		
@@ -135,7 +138,7 @@ public class BlackjackTest extends TestCase{
 		Dealer aDealer = new Dealer();
 		aDealer.draw(aDeck,new Card("SK"));
 		aDealer.draw(aDeck,new Card("H6"));
-		assertEquals('H', aDealer.decideTurn());
+		assertEquals('H', aDealer.decideTurn(aDealer.getActiveHand()));
 		
 	}
 	public void testDealerHandReveal() {
@@ -208,15 +211,15 @@ public class BlackjackTest extends TestCase{
 	}
 	public void testPlayerBlackjackDetect() {
 		Casino aCasino = new Casino();
-		aCasino.getPlayer().getHand(0).add(new Card("SK"));
-		aCasino.getPlayer().getHand(0).add(new Card("SA"));
+		aCasino.getPlayer().getActiveHand().add(new Card("SK"));
+		aCasino.getPlayer().getActiveHand().add(new Card("SA"));
 		assertTrue(aCasino.getPlayer().hasBlackJack());
 	}
 	
 	public void testDealerBlackjackDetect() {
 		Casino aCasino = new Casino();
-		aCasino.getDealer().getHand(0).add(new Card("SK"));
-		aCasino.getDealer().getHand(0).add(new Card("SA"));
+		aCasino.getDealer().getActiveHand().add(new Card("SK"));
+		aCasino.getDealer().getActiveHand().add(new Card("SA"));
 		assertTrue(aCasino.getDealer().hasBlackJack());
 	}
 	public void testPlayerBlackjackWin() {
@@ -250,19 +253,19 @@ public class BlackjackTest extends TestCase{
 		Casino aCasino = new Casino();
 		assertEquals(0,aCasino.runGame("f", "aPlayerScoringTest.txt"));
 		//game ran successfully
-		assertEquals(12,aCasino.getPlayer().getHand(0).value());
+		assertEquals(12,aCasino.getPlayer().getActiveHand().value());
 		//Player  was the winner
 		
 		Casino bCasino = new Casino();
 		assertEquals(0,aCasino.runGame("f", "bPlayerScoringTest.txt"));
 		//game ran successfully
-		assertEquals(23,bCasino.getPlayer().getHand(0).value());
+		assertEquals(23,bCasino.getPlayer().getActiveHand().value());
 		//Player  was the winner
 		
 		Casino cCasino = new Casino();
 		assertEquals(0,cCasino.runGame("f", "cPlayerScoringTest.txt"));
 		//game ran successfully
-		assertEquals(25,cCasino.getPlayer().getHand(0).value());
+		assertEquals(25,cCasino.getPlayer().getActiveHand().value());
 		//Player  was the winner
 		
 		
@@ -271,19 +274,19 @@ public class BlackjackTest extends TestCase{
 			Casino aCasino = new Casino();
 			assertEquals(0,aCasino.runGame("f", "aDealerScoringTest.txt"));
 			//game ran successfully
-			assertEquals(12,aCasino.getDealer().getHand(0).value());
+			assertEquals(12,aCasino.getDealer().getActiveHand().value());
 			//Dealer  was the winner
 			
 			Casino bCasino = new Casino();
 			assertEquals(0,aCasino.runGame("f", "bDealerScoringTest.txt"));
 			//game ran successfully
-			assertEquals(23,bCasino.getDealer().getHand(0).value());
+			assertEquals(23,bCasino.getDealer().getActiveHand().value());
 			//Dealer  was the loser
 			
 			Casino cCasino = new Casino();
 			assertEquals(0,cCasino.runGame("f", "cDealerScoringTest.txt"));
 			//game ran successfully
-			assertEquals(17,cCasino.getDealer().getHand(0).value());
+			assertEquals(17,cCasino.getDealer().getActiveHand().value());
 			//Dealer  was the winner
 		
 	}
@@ -293,7 +296,7 @@ public class BlackjackTest extends TestCase{
 		//game ran successfully
 		assertTrue(aCasino.getWinner() == aCasino.getPlayer());
 		//Player  was the winner
-		assertTrue(aCasino.getDealer().getHand(0).value() < aCasino.getPlayer().getHand(0).value());
+		assertTrue(aCasino.getDealer().getActiveHand().value() < aCasino.getPlayer().getActiveHand().value());
 		
 		
 	}
@@ -303,7 +306,7 @@ public class BlackjackTest extends TestCase{
 		assertEquals(0,aCasino.runGame("f", "dealerBetterOrEqualHandTest.txt"));
 		//game ran successfully
 		assertTrue(aCasino.getWinner() == aCasino.getDealer());
-		assertTrue(aCasino.getDealer().getHand(0).value() >= aCasino.getPlayer().getHand(0).value());
+		assertTrue(aCasino.getDealer().getActiveHand().value() >= aCasino.getPlayer().getActiveHand().value());
 		//Player  was the winner
 		
 	}
